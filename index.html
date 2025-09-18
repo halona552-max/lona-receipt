@@ -81,7 +81,7 @@
         </div>
       </div>
 
-      <!-- 身分證影本上傳（新） -->
+      <!-- 身分證影本上傳 -->
       <div class="bg-white shadow-sm rounded-xl p-5">
         <h2 class="text-lg font-semibold mb-4">身分證影本上傳（選填）</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -112,12 +112,11 @@
             <select id="incomeCode" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
               <option value="">請選擇</option>
               <option value="50">50（臨時工資）</option>
-              <option value="9A">9A（執行業務）</option>
-              <option value="91">91（獎金）</option>
+              <option value="9A9B">9A/9B（執行業務）</option>
             </select>
             <p class="text-xs text-gray-500 mt-1">
               所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%，金額超過$88,501，所得稅需代扣5%；<br>
-              所得格式代碼9A（執行業務），金額超過$20,000，所得稅需代扣10%。
+              所得格式代碼9A/9B（執行業務），金額超過$20,000，所得稅需代扣10%。
             </p>
           </label>
           <label class="block">
@@ -147,7 +146,6 @@
     const val = (id)=> (el(id)?.value || '').trim();
     const num = (id)=> Number(val(id) || 0);
 
-    // 「同上」處理
     function normalizeSameAs(s){
       return (s || '').replace(/\s|　/g,'').replace(/[。\.]/g,'').trim() === '同上';
     }
@@ -220,7 +218,7 @@
       return true;
     }
 
-    // ===== 規則計算（你指定的版本） =====
+    // ===== 規則計算 =====
     function computeNHIT(subtotal, incomeCode){
       // 只有「50」且金額 > 28,590 才扣二代健保 2.11%
       if (incomeCode === '50' && subtotal > 28590) {
@@ -233,11 +231,10 @@
       if (incomeCode === '50' && subtotal > 88501) {
         return Math.round(subtotal * 0.05);
       }
-      // 9A：金額 > 20,000 → 10%
-      if (incomeCode === '9A' && subtotal > 20000) {
+      // 9A/9B：金額 > 20,000 → 10%
+      if (incomeCode === '9A9B' && subtotal > 20000) {
         return Math.round(subtotal * 0.10);
       }
-      // 91：不扣
       return 0;
     }
 
@@ -270,12 +267,12 @@
       let taxLabel = '(未扣)';
       if (model.tax > 0) {
         taxLabel = model.incomeCode === '50' ? '(5%)'
-                 : model.incomeCode === '9A' ? '(10%)'
+                 : model.incomeCode === '9A9B' ? '(10%)'
                  : '';
       }
       const nhitLabel = model.nhit > 0 ? '(2.11%)' : '(未扣)';
 
-      // 身分證影本（若有）
+      // 身分證影本區塊
       const idBlock = `
         <div class="card">
           <h3>身分證影本</h3>
@@ -353,7 +350,7 @@
             </table>
             <div class="muted" style="margin-top:6px;">
               所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%，金額超過$88,501，所得稅需代扣5%；<br>
-              所得格式代碼9A（執行業務），金額超過$20,000，所得稅需代扣10%。
+              所得格式代碼9A/9B（執行業務），金額超過$20,000，所得稅需代扣10%。
             </div>
           </div>
 
@@ -420,7 +417,7 @@
       html2pdf().set(opt).from(html).save();
     }
 
-    // ===== 綁事件 & 預設值 =====
+    // 綁事件 & 預設值
     document.getElementById('btnPDF').addEventListener('click', generatePDF);
     document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
   </script>
