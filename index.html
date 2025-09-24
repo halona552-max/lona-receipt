@@ -81,7 +81,7 @@
         </div>
       </div>
 
-      <!-- 身分證影本上傳 -->
+      <!-- 身分證影本上傳（選填） -->
       <div class="bg-white shadow-sm rounded-xl p-5">
         <h2 class="text-lg font-semibold mb-4">身分證影本上傳（選填）</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -110,13 +110,10 @@
           <label class="block">
             <span class="text-sm">所得格式代碼</span>
             <select id="incomeCode" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="">請選擇</option>
-              <option value="50">50（臨時工資）</option>
-              <option value="9A9B">9A/9B（執行業務）</option>
+              <option value="50" selected>50（臨時工資）</option>
             </select>
             <p class="text-xs text-gray-500 mt-1">
-              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%，金額超過$88,501，所得稅需代扣5%；<br>
-              所得格式代碼9A/9B（執行業務），金額超過$20,000，所得稅需代扣10%。
+              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%；金額超過$88,501，所得稅需代扣5%。
             </p>
           </label>
           <label class="block">
@@ -196,7 +193,7 @@
       req('payeeId','身分證字號');
       req('payeeAddress','戶籍地址');
       req('serviceItem','勞務項目');
-      req('incomeCode','所得格式代碼');
+      // 所得格式代碼固定為 50，不需檢查選擇
       reqMinNumber('quantity','數量',1);
       reqMinNumber('unitPrice','單價',1);
       reqRadio('payment','支付方式（現金／銀行轉帳）');
@@ -218,24 +215,14 @@
       return true;
     }
 
-    // ===== 規則計算 =====
-    function computeNHIT(subtotal, incomeCode){
-      // 只有「50」且金額 > 28,590 才扣二代健保 2.11%
-      if (incomeCode === '50' && subtotal > 28590) {
-        return Math.round(subtotal * 0.0211);
-      }
-      return 0;
+    // ===== 規則計算（僅 50 臨時工資） =====
+    function computeNHIT(subtotal){
+      // 金額 > 28,590 → 二代健保 2.11%
+      return (subtotal > 28590) ? Math.round(subtotal * 0.0211) : 0;
     }
-    function computeTax(subtotal, incomeCode){
-      // 50：金額 > 88,501 → 5%
-      if (incomeCode === '50' && subtotal > 88501) {
-        return Math.round(subtotal * 0.05);
-      }
-      // 9A/9B：金額 > 20,000 → 10%
-      if (incomeCode === '9A9B' && subtotal > 20000) {
-        return Math.round(subtotal * 0.10);
-      }
-      return 0;
+    function computeTax(subtotal){
+      // 金額 > 88,501 → 所得稅 5%
+      return (subtotal > 88501) ? Math.round(subtotal * 0.05) : 0;
     }
 
     // ===== PDF 內容 =====
@@ -263,16 +250,9 @@
         </style>
       `;
 
-      // 稅額標籤
-      let taxLabel = '(未扣)';
-      if (model.tax > 0) {
-        taxLabel = model.incomeCode === '50' ? '(5%)'
-                 : model.incomeCode === '9A9B' ? '(10%)'
-                 : '';
-      }
       const nhitLabel = model.nhit > 0 ? '(2.11%)' : '(未扣)';
+      const taxLabel  = model.tax  > 0 ? '(5%)'    : '(未扣)';
 
-      // 身分證影本區塊
       const idBlock = `
         <div class="card">
           <h3>身分證影本</h3>
@@ -315,7 +295,7 @@
           <div class="card">
             <h3>勞務內容</h3>
             <div>勞務項目：${model.serviceItem || '—'}</div>
-            <div>所得格式代碼：<strong>${model.incomeCodeText || '—'}</strong></div>
+            <div>所得格式代碼：<strong>50（臨時工資）</strong></div>
             <table>
               <thead>
                 <tr>
@@ -349,8 +329,7 @@
               </tfoot>
             </table>
             <div class="muted" style="margin-top:6px;">
-              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%，金額超過$88,501，所得稅需代扣5%；<br>
-              所得格式代碼9A/9B（執行業務），金額超過$20,000，所得稅需代扣10%。
+              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%；金額超過$88,501，所得稅需代扣5%。
             </div>
           </div>
 
@@ -376,19 +355,16 @@
     function generatePDF(){
       if(!validateForm()) return;
 
-      const incomeSelect   = el('incomeCode');
-      const incomeCode     = incomeSelect?.value || '';
-      const incomeCodeText = incomeSelect?.selectedOptions?.[0]?.text || '';
-      const paymentEl      = document.querySelector('input[name="payment"]:checked');
-      const paymentText    = paymentEl ? paymentEl.value : '';
-      const mailAddr       = resolveMailAddress();
+      const paymentEl   = document.querySelector('input[name="payment"]:checked');
+      const paymentText = paymentEl ? paymentEl.value : '';
+      const mailAddr    = resolveMailAddress();
 
       const quantity  = num('quantity');
       const unitPrice = num('unitPrice');
       const subtotal  = Math.max(0, Math.round(quantity * unitPrice));
 
-      const nhit = computeNHIT(subtotal, incomeCode);
-      const tax  = computeTax(subtotal, incomeCode);
+      const nhit = computeNHIT(subtotal);
+      const tax  = computeTax(subtotal);
       const payable = Math.max(0, subtotal - nhit - tax);
 
       const model = {
@@ -400,7 +376,6 @@
         payeeMailAddress: mailAddr,
         paymentText,
         serviceItem:      val('serviceItem'),
-        incomeCode, incomeCodeText,
         quantity, unitPrice, subtotal,
         nhit, tax, payable,
         idFront: idFrontDataUrl,
