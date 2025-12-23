@@ -4,10 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>勞務報酬單生成器｜Lona</title>
+
   <!-- Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
   <!-- html2pdf.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
   <style>
     .img-preview {
       width: 100%;
@@ -20,10 +23,13 @@
     .img-preview img { max-width: 100%; max-height: 100%; object-fit: contain; }
   </style>
 </head>
+
 <body class="bg-gray-50 text-gray-900">
   <div class="max-w-3xl mx-auto p-6">
     <header class="mb-6">
-      <h1 class="text-2xl md:text-3xl font-bold">勞務報酬單生成器 <span class="text-indigo-600">｜Lona版</span></h1>
+      <h1 class="text-2xl md:text-3xl font-bold">
+        勞務報酬單生成器 <span class="text-indigo-600">｜Lona版</span>
+      </h1>
       <p class="text-sm text-gray-600 mt-1">填寫表單 → 下載 PDF</p>
     </header>
 
@@ -34,11 +40,13 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label class="block">
             <span class="text-sm">製表日期</span>
-            <input id="issueDate" type="date" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+            <input id="issueDate" type="date"
+              class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
           </label>
           <label class="block">
             <span class="text-sm">經辦人</span>
-            <input id="agentName" type="text" placeholder="請輸入經辦人姓名" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+            <input id="agentName" type="text" placeholder="請輸入經辦人姓名"
+              class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
           </label>
         </div>
       </div>
@@ -49,20 +57,26 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <label class="block">
             <span class="text-sm">姓名</span>
-            <input id="payeeName" type="text" placeholder="王小美" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+            <input id="payeeName" type="text" placeholder="王小美"
+              class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
           </label>
           <label class="block">
             <span class="text-sm">身分證字號</span>
-            <input id="payeeId" type="text" placeholder="A123456789" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+            <input id="payeeId" type="text" placeholder="A123456789"
+              class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
           </label>
         </div>
+
         <label class="block mt-3">
           <span class="text-sm">戶籍地址</span>
-          <input id="payeeAddress" type="text" placeholder="新北市板橋區文化路一段 1 號" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+          <input id="payeeAddress" type="text" placeholder="新北市板橋區文化路一段 1 號"
+            class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
         </label>
+
         <label class="block mt-3">
           <span class="text-sm">通訊地址</span>
-          <input id="payeeMailAddress" type="text" placeholder="(同戶籍地址，請填入「同上」)" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
+          <input id="payeeMailAddress" type="text" placeholder="(同戶籍地址，請填入「同上」)"
+            class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
         </label>
 
         <!-- 支付方式（單選） -->
@@ -70,331 +84,4 @@
           <span class="text-sm block mb-2">支付方式（單選）</span>
           <div class="flex items-center gap-6">
             <label class="inline-flex items-center gap-2">
-              <input name="payment" value="現金" type="radio" class="rounded border-gray-300">
-              <span>現金</span>
-            </label>
-            <label class="inline-flex items-center gap-2">
-              <input name="payment" value="銀行轉帳" type="radio" class="rounded border-gray-300">
-              <span>銀行轉帳</span>
-            </label>
-          </div>
-        </div>
-      </div>
-
-      <!-- 身分證影本上傳（選填） -->
-      <div class="bg-white shadow-sm rounded-xl p-5">
-        <h2 class="text-lg font-semibold mb-4">身分證影本上傳（選填）</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm mb-1">身分證影本（正面）</label>
-            <input id="idFront" type="file" accept="image/*" class="block w-full text-sm mb-2">
-            <div class="img-preview" id="prevFront"><span class="text-gray-400 text-sm">尚未上傳</span></div>
-          </div>
-          <div>
-            <label class="block text-sm mb-1">身分證影本（反面）</label>
-            <input id="idBack" type="file" accept="image/*" class="block w-full text-sm mb-2">
-            <div class="img-preview" id="prevBack"><span class="text-gray-400 text-sm">尚未上傳</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 勞務內容與金額 -->
-      <div class="bg-white shadow-sm rounded-xl p-5">
-        <h2 class="text-lg font-semibold mb-4">勞務內容與金額</h2>
-        <label class="block">
-          <span class="text-sm">勞務項目</span>
-          <input id="serviceItem" type="text" placeholder="社群行銷企劃與執行" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
-        </label>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
-          <label class="block">
-            <span class="text-sm">所得格式代碼</span>
-            <select id="incomeCode" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
-              <option value="50" selected>50（臨時工資）</option>
-            </select>
-            <p class="text-xs text-gray-500 mt-1">
-              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%；金額超過$88,501，所得稅需代扣5%。
-            </p>
-          </label>
-          <label class="block">
-            <span class="text-sm">數量</span>
-            <input id="quantity" type="number" min="1" step="1" value="1" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
-          </label>
-          <label class="block">
-            <span class="text-sm">單價（TWD）</span>
-            <input id="unitPrice" type="number" min="1" step="1" value="1000" class="mt-1 w-full rounded-lg border-gray-300 focus:ring-indigo-500 focus:border-indigo-500"/>
-          </label>
-        </div>
-      </div>
-
-      <!-- 下載按鈕 -->
-      <div>
-        <button id="btnPDF" class="inline-flex items-center px-4 py-2 rounded-lg bg-gray-800 text-white hover:bg-black focus:ring-2 focus:ring-gray-700">
-          下載 PDF
-        </button>
-      </div>
-    </section>
-  </div>
-
-  <script>
-    // ===== 工具 =====
-    const fmt = (n)=> Number(Math.round(n||0)).toLocaleString('zh-Hant-TW',{maximumFractionDigits:0});
-    const el  = (id)=> document.getElementById(id);
-    const val = (id)=> (el(id)?.value || '').trim();
-    const num = (id)=> Number(val(id) || 0);
-
-    function normalizeSameAs(s){
-      return (s || '').replace(/\s|　/g,'').replace(/[。\.]/g,'').trim() === '同上';
-    }
-    function resolveMailAddress(){
-      const home = val('payeeAddress');
-      const mail = val('payeeMailAddress');
-      return normalizeSameAs(mail) ? home : mail;
-    }
-    el('payeeMailAddress').addEventListener('blur', ()=>{
-      if (normalizeSameAs(el('payeeMailAddress').value)) {
-        el('payeeMailAddress').value = val('payeeAddress');
-      }
-    });
-
-    // ===== 影本上傳與預覽 =====
-    let idFrontDataUrl = '';
-    let idBackDataUrl  = '';
-    function readFileToDataURL(file, cb){
-      const r = new FileReader();
-      r.onload = ()=> cb(r.result);
-      r.readAsDataURL(file);
-    }
-    function bindImageInput(inputId, previewId, setter){
-      const input = el(inputId), box = el(previewId);
-      input.addEventListener('change', ()=>{
-        const f = input.files && input.files[0];
-        if(!f){ setter(''); box.innerHTML = '<span class="text-gray-400 text-sm">尚未上傳</span>'; return; }
-        readFileToDataURL(f, (url)=>{
-          setter(url);
-          box.innerHTML = `<img src="${url}" alt="preview">`;
-        });
-      });
-    }
-    bindImageInput('idFront','prevFront',(v)=> idFrontDataUrl = v);
-    bindImageInput('idBack','prevBack',(v)=> idBackDataUrl = v);
-
-    // ===== 必填檢查 =====
-    function validateForm(){
-      const errors = [];
-      const focusOrder = [];
-      function req(id, label){ if(!val(id)){ errors.push(`請填寫：${label}`); focusOrder.push(id); } }
-      function reqRadio(name,label){ if(!document.querySelector(`input[name="${name}"]:checked`)){ errors.push(`請選擇：${label}`); focusOrder.push(`radio:${name}`); } }
-      function reqMinNumber(id, label, min){ const n = Number(val(id)); if(!(n >= min)){ errors.push(`${label}需 ≥ ${min}`); focusOrder.push(id); } }
-
-      req('issueDate','製表日期');
-      req('agentName','經辦人');
-      req('payeeName','所得人姓名');
-      req('payeeId','身分證字號');
-      req('payeeAddress','戶籍地址');
-      req('serviceItem','勞務項目');
-      // 所得格式代碼固定為 50，不需檢查選擇
-      reqMinNumber('quantity','數量',1);
-      reqMinNumber('unitPrice','單價',1);
-      reqRadio('payment','支付方式（現金／銀行轉帳）');
-
-      if(errors.length){
-        alert(errors.join('\n'));
-        const first = focusOrder[0];
-        if(first){
-          if(first.startsWith('radio:')){
-            const name = first.split(':')[1];
-            document.querySelector(`input[name="${name}"]`)?.scrollIntoView({behavior:'smooth', block:'center'});
-          }else{
-            el(first)?.focus();
-            el(first)?.scrollIntoView({behavior:'smooth', block:'center'});
-          }
-        }
-        return false;
-      }
-      return true;
-    }
-
-    // ===== 規則計算（僅 50 臨時工資） =====
-    function computeNHIT(subtotal){
-      // 金額 > 28,590 → 二代健保 2.11%
-      return (subtotal > 28590) ? Math.round(subtotal * 0.0211) : 0;
-    }
-    function computeTax(subtotal){
-      // 金額 > 88,501 → 所得稅 5%
-      return (subtotal > 88501) ? Math.round(subtotal * 0.05) : 0;
-    }
-
-    // ===== PDF 內容 =====
-    function buildPdfHtml(model){
-      const css = `
-        <style>
-          *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Noto Sans TC","Segoe UI",Roboto,Helvetica,Arial;}
-          .sheet{width:210mm; padding:14mm 16mm; background:#fff; color:#111;}
-          h1{margin:0 0 8px; font-size:20px; text-align:center; font-weight:700;}
-          .meta{display:flex; justify-content:flex-end; font-size:12px; margin-bottom:12px;}
-          .card{border:1px solid #e5e7eb; border-radius:8px; padding:10px; margin-bottom:12px;}
-          .card h3{margin:0 0 6px; font-size:13px;}
-          table{width:100%; border-collapse:collapse; font-size:12px; margin-top:6px;}
-          th,td{border:1px solid #e5e7eb; padding:8px;}
-          th{text-align:left; background:#f9fafb;}
-          td.num{text-align:right; font-family:ui-monospace,Menlo,Consolas,monospace;}
-          .muted{color:#6b7280; font-size:11px;}
-          .total-row td{background:#eef2ff; font-weight:700;}
-          .signs3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:16px;}
-          .signs3 .box{height:60px; border:1px dashed #c7c9d1; border-radius:6px;
-                       display:flex; align-items:center; justify-content:center; font-weight:600;}
-          .id-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px;}
-          .id-box{height:120px; border:1px dashed #c7c9d1; border-radius:6px; display:flex; align-items:center; justify-content:center; overflow:hidden; background:#fafafa;}
-          .id-box img{max-width:100%; max-height:100%; object-fit:contain;}
-        </style>
-      `;
-
-      const nhitLabel = model.nhit > 0 ? '(2.11%)' : '(未扣)';
-      const taxLabel  = model.tax  > 0 ? '(5%)'    : '(未扣)';
-
-      const idBlock = `
-        <div class="card">
-          <h3>身分證影本</h3>
-          <div class="id-grid">
-            <div>
-              <div style="font-size:12px;margin-bottom:4px;">正面</div>
-              <div class="id-box">
-                ${model.idFront ? `<img src="${model.idFront}" alt="ID front">` : ''}
-              </div>
-            </div>
-            <div>
-              <div style="font-size:12px;margin-bottom:4px;">反面</div>
-              <div class="id-box">
-                ${model.idBack ? `<img src="${model.idBack}" alt="ID back">` : ''}
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      return `
-        ${css}
-        <div class="sheet">
-          <h1>勞務報酬單</h1>
-          <div class="meta">
-            <div>製表日期：<strong>${model.issueDate || '—'}</strong></div>
-          </div>
-
-          <div class="card">
-            <h3>所得人資訊</h3>
-            <div>姓名：${model.payeeName || '—'}</div>
-            <div>身分證字號：${model.payeeId || '—'}</div>
-            <div>戶籍地址：${model.payeeAddress || '—'}</div>
-            <div>通訊地址：${model.payeeMailAddress || '—'}</div>
-            <div>支付方式：<strong>${model.paymentText || '—'}</strong></div>
-          </div>
-
-          ${idBlock}
-
-          <div class="card">
-            <h3>勞務內容</h3>
-            <div>勞務項目：${model.serviceItem || '—'}</div>
-            <div>所得格式代碼：<strong>50（臨時工資）</strong></div>
-            <table>
-              <thead>
-                <tr>
-                  <th>品項</th>
-                  <th style="width:80px; text-align:right;">數量</th>
-                  <th style="width:120px; text-align:right;">單價 (TWD)</th>
-                  <th style="width:140px; text-align:right;">小計 (TWD)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>勞務費</td>
-                  <td class="num">${fmt(model.quantity)}</td>
-                  <td class="num">${fmt(model.unitPrice)}</td>
-                  <td class="num">${fmt(model.subtotal)}</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colspan="3" style="text-align:right;">扣繳二代健保 ${nhitLabel}</td>
-                  <td class="num">${fmt(model.nhit)}</td>
-                </tr>
-                <tr>
-                  <td colspan="3" style="text-align:right;">扣繳所得稅 ${taxLabel}</td>
-                  <td class="num">${fmt(model.tax)}</td>
-                </tr>
-                <tr class="total-row">
-                  <td colspan="3" style="text-align:right;">應付淨額 (TWD)</td>
-                  <td class="num">${fmt(model.payable)}</td>
-                </tr>
-              </tfoot>
-            </table>
-            <div class="muted" style="margin-top:6px;">
-              所得格式代碼50（臨時工資），金額超過$28,590，二代健保需扣繳2.11%；金額超過$88,501，所得稅需代扣5%。
-            </div>
-          </div>
-
-          <div class="signs3">
-            <div>
-              <div style="font-size:12px; margin-bottom:4px;">經辦人</div>
-              <div class="box">${model.agentName || ''}</div>
-            </div>
-            <div>
-              <div style="font-size:12px; margin-bottom:4px;">主管簽名／蓋章</div>
-              <div class="box"></div>
-            </div>
-            <div>
-              <div style="font-size:12px; margin-bottom:4px;">所得人簽名／蓋章</div>
-              <div class="box"></div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    // ===== 產生 PDF =====
-    function generatePDF(){
-      if(!validateForm()) return;
-
-      const paymentEl   = document.querySelector('input[name="payment"]:checked');
-      const paymentText = paymentEl ? paymentEl.value : '';
-      const mailAddr    = resolveMailAddress();
-
-      const quantity  = num('quantity');
-      const unitPrice = num('unitPrice');
-      const subtotal  = Math.max(0, Math.round(quantity * unitPrice));
-
-      const nhit = computeNHIT(subtotal);
-      const tax  = computeTax(subtotal);
-      const payable = Math.max(0, subtotal - nhit - tax);
-
-      const model = {
-        issueDate:        val('issueDate'),
-        agentName:        val('agentName'),
-        payeeName:        val('payeeName'),
-        payeeId:          val('payeeId'),
-        payeeAddress:     val('payeeAddress'),
-        payeeMailAddress: mailAddr,
-        paymentText,
-        serviceItem:      val('serviceItem'),
-        quantity, unitPrice, subtotal,
-        nhit, tax, payable,
-        idFront: idFrontDataUrl,
-        idBack:  idBackDataUrl
-      };
-
-      const html = buildPdfHtml(model);
-      const opt = {
-        margin: 0,
-        filename: `勞務報酬單_${new Date().toISOString().slice(0,10)}.pdf`,
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(html).save();
-    }
-
-    // 綁事件 & 預設值
-    document.getElementById('btnPDF').addEventListener('click', generatePDF);
-    document.getElementById('issueDate').value = new Date().toISOString().slice(0,10);
-  </script>
-</body>
-</html>
+              <input name="payment" value="現金" type
